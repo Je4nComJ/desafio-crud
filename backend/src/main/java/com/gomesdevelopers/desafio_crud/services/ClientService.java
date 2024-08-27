@@ -12,6 +12,8 @@ import com.gomesdevelopers.desafio_crud.dto.ClientDTO;
 import com.gomesdevelopers.desafio_crud.entities.Client;
 import com.gomesdevelopers.desafio_crud.repositories.ClientRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class ClientService {
 	
@@ -39,6 +41,18 @@ public class ClientService {
 		copyDtoToEntity(dto, entity);
 		entity = repository.save(entity);
 		return new ClientDTO(entity);
+	}
+	
+	@Transactional
+	public ClientDTO update(Long id, ClientDTO dto) {
+		try {
+			Client entity = repository.getOne(id);
+			copyDtoToEntity(dto, entity);
+			entity = repository.save(entity);
+			return new ClientDTO(entity);
+		}catch (EntityNotFoundException e) {
+			throw new EntityNotFoundException("Id not found" + id);
+		}
 	}
 	
 	
